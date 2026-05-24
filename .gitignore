@@ -1,0 +1,3 @@
+# Claude Code operator-only artifacts — never share via git.
+# NOTE: CLAUDE.md IS committed here (it's part of the skill repo); only memory is ignored.
+.claude/memory/

@@ -1,0 +1,25 @@
+{
+  "name": "website-skills",
+  "description": "Milo's house conventions for building production-grade Next.js + Tailwind websites on the DeployNow stack.",
+  "owner": {
+    "name": "milojarow",
+    "url": "https://github.com/milojarow"
+  },
+  "plugins": [
+    {
+      "name": "website-skills",
+      "source": "./",
+      "description": "Conventions for building Next.js App Router + Tailwind/DaisyUI websites on the DeployNow stack — server-first RSC/SSR, file/component naming, layout stability + trace-upward debugging, WebP images, Web Vitals, error handling, and Vercel deploy.",
+      "version": "0.1.0",
+      "author": {
+        "name": "milojarow",
+        "url": "https://github.com/milojarow"
+      },
+      "category": "web-development",
+      "keywords": ["nextjs", "tailwind", "react", "vercel"],
+      "homepage": "https://github.com/milojarow/website-skills",
+      "repository": "https://github.com/milojarow/website-skills",
+      "license": "MIT"
+    }
+  ]
+}

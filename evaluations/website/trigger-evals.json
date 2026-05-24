@@ -1,0 +1,15 @@
+[
+  {"query": "Build a landing page for my Next.js app with a hero and pricing cards.", "should_trigger": true},
+  {"query": "What should I name this component file — it's a button for account settings?", "should_trigger": true},
+  {"query": "Should this be a server component or a client component? It fetches data.", "should_trigger": true},
+  {"query": "My layout has a huge empty gap on the right and the content is cramped — fix it.", "should_trigger": true},
+  {"query": "Optimize the images and Web Vitals on my homepage.", "should_trigger": true},
+  {"query": "Wrap this async data call with proper error handling and loading states.", "should_trigger": true},
+  {"query": "Deploy my site to Vercel and check the build logs.", "should_trigger": true},
+  {"query": "Add a Suspense boundary and lazy-load this non-critical widget in my Next.js page.", "should_trigger": true},
+  {"query": "Build an eww widget for my status bar.", "should_trigger": false},
+  {"query": "Create an n8n workflow that posts to a webhook.", "should_trigger": false},
+  {"query": "Query Contacts in EspoCRM via the API.", "should_trigger": false},
+  {"query": "Write a Python CLI to parse my log files.", "should_trigger": false},
+  {"query": "Build a React Native mobile screen with a bottom tab bar.", "should_trigger": false}
+]

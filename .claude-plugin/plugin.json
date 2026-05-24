@@ -1,0 +1,13 @@
+{
+  "name": "website-skills",
+  "version": "0.1.0",
+  "description": "Conventions for building Next.js App Router + Tailwind/DaisyUI websites on the DeployNow stack — server-first RSC/SSR, file/component naming, layout stability + trace-upward debugging, WebP images, Web Vitals, error handling, and Vercel deploy.",
+  "author": {
+    "name": "milojarow",
+    "url": "https://github.com/milojarow"
+  },
+  "license": "MIT",
+  "keywords": ["nextjs", "tailwind", "react", "vercel"],
+  "repository": "https://github.com/milojarow/website-skills",
+  "homepage": "https://github.com/milojarow/website-skills"
+}
