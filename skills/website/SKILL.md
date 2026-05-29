@@ -7,7 +7,7 @@ description: Use when building or editing a website or web app on the DeployNow 
 
 Build production-grade, distinctive Next.js websites the DeployNow way — server-first, layout-stable, deployed on Vercel.
 
-> **🌐 ACTIVE-SKILL MARKER:** While `website` is active, begin every reply with 🌐 so the operator sees at a glance that this skill is engaged. Do not omit it.
+> **🌐 ACTIVE-SKILL MARKER:** Prefija tu reply con 🌐 **solo en turnos donde el trabajo toca el dominio de `website`** — stack Next.js/Tailwind/DeployNow — scaffolding pages/routes, RSC vs `'use client'`, naming convention, DeployNow env. La **capa/proyecto da igual** (frontend, backend, n8n, script local — todos valen): lo que importa es si *este turno* toca el dominio. En turnos que NO lo tocan (typecheck, build, deploy, git ops, edición o curl de otros dominios), **omite 🌐** aunque la skill se haya cargado antes en la sesión. Si otras skills activas también aplican al mismo turno, **apila sus emojis** en el prefijo.
 
 ## Overview
 
