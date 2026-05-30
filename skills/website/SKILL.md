@@ -37,6 +37,7 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 | Layout stability + the trace-upward debugging method | [reference/layout.md](reference/layout.md) |
 | WebP images, lazy loading, Web Vitals (LCP/CLS/FID) | [reference/performance.md](reference/performance.md) |
 | Vercel deploy, error handling, external-CDN / no double-hosting | [reference/deploy.md](reference/deploy.md) |
+| Mobile-first: tab rows → scroll horizontal, grid shrink, tap targets, density | [reference/mobile-design.md](reference/mobile-design.md) |
 
 ## Quick reference
 
@@ -46,6 +47,7 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 - **Client code:** `'use client'` only for Web API access in small components — never for data fetching or state.
 - **Text in JSX:** type real accented chars (á, é, í, ñ, ¿, ¡) directly — a backslash-u unicode escape renders as its literal characters between tags, not as the letter.
 - **Builds:** never build locally — let Vercel build; read logs with `vercel inspect`.
+- **Mobile tab rows:** una fila de tabs/pills que no cabe → una sola línea con scroll horizontal (`flex-nowrap overflow-x-auto min-w-0` + `shrink-0 whitespace-nowrap` en items), **nunca** `flex-wrap` apilado.
 
 ## Common mistakes
 
@@ -53,3 +55,4 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 - Patching a leaf component to fix empty space or cramping → the cap is in an ancestor (page → layout → root → global CSS). Trace upward first.
 - Committing `public/` while serving media from an external CDN → double-hosting. `public/` goes in `.gitignore` from the first scaffold.
 - Using a backslash-u unicode escape in JSX text expecting an accented letter → it renders the raw escape characters; type the real char.
+- Apilar tabs/pills con `flex-wrap` en móvil cuando no caben → usa una sola línea con scroll horizontal (`overflow-x-auto` + `min-w-0`). Ver [reference/mobile-design.md](reference/mobile-design.md).
