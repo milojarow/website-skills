@@ -1,0 +1,16 @@
+{
+  "id": "website-003",
+  "skills": ["website"],
+  "query": "I'm scaffolding a new Next.js site that serves all its product images and videos from our external CDN at cdn.example.com. Should I drop a copy of those assets into public/ and commit them so the repo is self-contained?",
+  "expected_behavior": [
+    "Activates the website skill",
+    "Routes to reference/deploy.md",
+    "Says NO — do not commit local copies of CDN-served assets",
+    "Explains this creates double hosting: Vercel's CDN ships duplicates while the real CDN serves the actual assets, causing wasted bandwidth and drift between copies",
+    "Prescribes putting public/ in .gitignore from the initial scaffold, with the external CDN as the single source of truth",
+    "If already double-hosting, notes the cleanup (gitignore public/, purge tracked copies from history, force-push, GC) is a heavy history-rewrite — confirm before running"
+  ],
+  "expected_content": ["deploy.md", "double hosting", ".gitignore", "public/"],
+  "priority": "high",
+  "notes": "Guards the double-hosting trap when a project uses an external CDN. The intuitive answer ('commit assets so the repo is self-contained') is exactly wrong — the skill knows public/ must be gitignored from scaffold and the CDN is the source of truth."
+}

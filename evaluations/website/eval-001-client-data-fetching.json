@@ -1,0 +1,16 @@
+{
+  "id": "website-001",
+  "skills": ["website"],
+  "query": "I need to show the user's account metrics on the dashboard page of my Next.js app. I was going to add 'use client' at the top of the page and pull the data in a useEffect with fetch — is that the right way to wire it up?",
+  "expected_behavior": [
+    "Activates the website skill",
+    "Routes to reference/server-first.md",
+    "Rejects the 'use client' + useEffect data-fetch pattern as the costly anti-pattern",
+    "Recommends fetching in the React Server Component itself (async server component, await the data) so secrets stay server-side and the client bundle shrinks",
+    "Notes that 'use client' should be pushed as far DOWN the tree as possible (small leaf), never lifted to the top of the page",
+    "Mentions swr only as a last resort for data that must refresh client-side after initial load"
+  ],
+  "expected_content": ["server-first.md", "Server Component", "useEffect", "swr"],
+  "priority": "high",
+  "notes": "Guards the single most expensive default in this stack: reaching for a top-of-page 'use client' + useEffect to fetch data. A naive answer says 'yes, useEffect+fetch is standard React' — the skill knows the DeployNow rule is RSC server fetch, with the client boundary pushed to a small leaf."
+}

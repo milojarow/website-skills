@@ -1,0 +1,16 @@
+{
+  "id": "website-002",
+  "skills": ["website"],
+  "query": "My pricing cards are all cramped into the left half of the page with a big empty band on the right (I marked it red in this screenshot). I keep adding width and flex classes to the card component but it won't spread out. What am I missing?",
+  "expected_behavior": [
+    "Activates the website skill",
+    "Routes to reference/layout.md",
+    "Stops the user from patching the leaf card component",
+    "Explains the constraint is almost always an ANCESTOR — trace upward in order: page file → layout files → root layout → global CSS, hunting for maxWidth / flex / width / padding capping the child's space budget",
+    "Interprets the red-marked empty space as the geometric clue that an ancestor refuses to use that space, so the fix is the ancestor not the child",
+    "Says to modify the leaf only after confirming every parent in the chain is clean"
+  ],
+  "expected_content": ["layout.md", "ancestor", "maxWidth", "global CSS", "trace upward"],
+  "priority": "high",
+  "notes": "Guards the flailing pattern of patching the leaf when a layout is cramped/has dead space. A naive answer keeps tweaking the card's own classes; the skill knows the cap lives in a parent and that the red-space screenshot means fix the ancestor."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "website-005",
+  "skills": ["website"],
+  "query": "My heading is rendering the literal text 'Conf\\u00eda en nosotros' on the page instead of 'Confía en nosotros'. I wrote the accented letters as backslash-u escapes inside the JSX. Why is it printing the raw escape and how do I fix it?",
+  "expected_behavior": [
+    "Activates the website skill",
+    "Routes to reference/stack-and-conventions.md",
+    "Explains that inside JSX text (between tags) a backslash-u unicode escape renders as its literal characters, not the accented letter",
+    "Fix: type the real accented character (á, é, í, ó, ú, ñ, ¿, ¡) directly in the JSX text",
+    "Notes that JS string literals — attribute values, JS expressions, .js non-JSX files — DO interpret the escapes, but recommends typing real characters everywhere for consistency"
+  ],
+  "expected_content": ["stack-and-conventions.md", "JSX text", "í", "literal characters"],
+  "priority": "medium",
+  "notes": "Guards the JSX unicode-escape gotcha specific to Spanish UI text. A naive answer might blame encoding or the build; the skill knows JSX text nodes don't interpret backslash-u escapes and the fix is to type the real char."
+}

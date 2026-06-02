@@ -1,0 +1,16 @@
+{
+  "id": "website-004",
+  "skills": ["website"],
+  "query": "My admin's top nav has like 9 section tabs and on a phone they overflow off-screen and shove the logo out of view. I was going to add flex-wrap so they stack onto two rows on mobile. Good call?",
+  "expected_behavior": [
+    "Activates the website skill",
+    "Routes to reference/mobile-design.md",
+    "Rejects flex-wrap / stacking tabs onto multiple rows for an overflowing tab bar",
+    "Prescribes a single horizontal-scroll line: container gets flex flex-nowrap overflow-x-auto plus min-w-0 (optionally md:overflow-x-visible), each item gets shrink-0 whitespace-nowrap",
+    "Explains min-w-0 is the key: a flex item defaults to min-width:auto so without it the tab row pushes its neighbors (logo) off the viewport instead of scrolling",
+    "Frames horizontal scroll as the default for any growable tab bar / segmented control (Gmail / Instagram / Twitter pattern)"
+  ],
+  "expected_content": ["mobile-design.md", "min-w-0", "overflow-x-auto", "flex-wrap", "shrink-0"],
+  "priority": "medium",
+  "notes": "Guards the wrong instinct of wrapping an overflowing mobile tab row onto stacked rows. The skill knows the canonical fix is a single horizontal-scroll line and that min-w-0 is the load-bearing class preventing siblings from being shoved off-screen."
+}
