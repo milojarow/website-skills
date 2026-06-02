@@ -1,6 +1,6 @@
 # website-skills
 
-Milo's house conventions for building production-grade **Next.js + Tailwind** websites on the **DeployNow** stack, packaged as an installable Claude Code skill.
+House conventions for building production-grade **Next.js + Tailwind** websites on the **DeployNow** stack, packaged as an installable Claude Code skill.
 
 ## What it covers
 

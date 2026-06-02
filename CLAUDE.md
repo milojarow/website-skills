@@ -4,7 +4,7 @@ This file provides guidance to Claude Code when working with this repository.
 
 ## Project Overview
 
-This is the **website-skills** repository — Milo's conventions for building production-grade Next.js + Tailwind websites on the DeployNow stack, packaged as a Claude Code skill.
+This is the **website-skills** repository — opinionated conventions for building production-grade Next.js + Tailwind websites on the DeployNow stack, packaged as a Claude Code skill.
 
 **Repository**: https://github.com/milojarow/website-skills
 
