@@ -37,6 +37,7 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 | Layout stability + the trace-upward debugging method | [reference/layout.md](reference/layout.md) |
 | WebP images, lazy loading, Web Vitals (LCP/CLS/FID) | [reference/performance.md](reference/performance.md) |
 | Vercel deploy, error handling, external-CDN / no double-hosting | [reference/deploy.md](reference/deploy.md) |
+| Third-party scripts (pixels/analytics/widgets) under a strict CSP — silent dead-pixel trap + post-deploy verification | [reference/third-party-scripts-csp.md](reference/third-party-scripts-csp.md) |
 | Mobile-first: tab rows → scroll horizontal, grid shrink, tap targets, density | [reference/mobile-design.md](reference/mobile-design.md) |
 
 ## Quick reference
@@ -56,3 +57,4 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 - Committing `public/` while serving media from an external CDN → double-hosting. `public/` goes in `.gitignore` from the first scaffold.
 - Using a backslash-u unicode escape in JSX text expecting an accented letter → it renders the raw escape characters; type the real char.
 - Apilar tabs/pills con `flex-wrap` en móvil cuando no caben → usa una sola línea con scroll horizontal (`overflow-x-auto` + `min-w-0`). Ver [reference/mobile-design.md](reference/mobile-design.md).
+- Adding a third-party pixel/analytics script to a site with a strict CSP without allow-listing its CDN → the loader is blocked *silently* (inline stub queues events that never send). Allow-list `script-src`/`connect-src` and verify the event reaches the vendor dashboard. See [reference/third-party-scripts-csp.md](reference/third-party-scripts-csp.md).
