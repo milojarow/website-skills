@@ -29,6 +29,8 @@ The work splits into **two separate lists**, and keeping them separate is the po
 
 6. **If a route was renamed or removed after the sitemap was submitted**, add permanent `redirects()` in `next.config.js`. A 404 throws away whatever that URL had accumulated and teaches the crawler the site loses pages.
 
+7. **Enable Web Analytics on the project** — same class of platform-side pending work as the two lists above, and it belongs in this same pass. Mounting `<Analytics />` does not enable it; until the project switch is flipped, the site records nothing and that history is unrecoverable. See [vercel-web-analytics.md](vercel-web-analytics.md).
+
 ---
 
 ## Operator's part — in Google Search Console
