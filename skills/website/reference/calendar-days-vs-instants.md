@@ -45,3 +45,55 @@ Two things make that check worth running:
 
 1. **Include a winter date.** Many zones change offset with daylight saving — and neighbouring zones don't always agree, some keeping DST after others drop it. A fix validated only against summer dates may be leaning on that season's offset and break months later.
 2. **Confirm the OLD code FAILS.** If the check passes both versions, it measured nothing. Validate the instrument before trusting it on the object being measured.
+
+## Ingesting an external export: the serialization decides whether the bug is *repairable*
+
+Measured on two exports of the same booking system — same rows, same IDs, same non-time fields. Only the way time is serialized differs.
+
+**Export A — instant with offset:**
+
+```
+ID;Cliente;Inicio;Fin;...
+...;2026-08-08T03:00:00+08:00;2026-08-08T04:00:00+08:00;...
+```
+
+**Export C — date and clock columns, no zone:**
+
+```
+ID;Cliente;Fecha;Hora inicio;Hora fin;...
+...;2026-08-08;03:00;04:00;...
+```
+
+A couple of rows carried the **wrong offset** (`+08:00` instead of the local zone's). The two exports do not fail the same way:
+
+- In **A** the defect is detectable *and* repairable — the stored instant is still correct, so `astimezone(local_zone)` returns the true wall-clock time.
+- In **C** the offset no longer exists. What got written to disk is the *broken rendering* (`03:00`), and **nothing in the file can tell you it's wrong.** Measured gap: **+13 h** — one appointment slides from 2 p.m. one day to 3 a.m. the next.
+
+### Three rules that follow
+
+1. **An export "for humans" cannot be the source of truth.** Separate date/time columns read nicely and throw away the only information that makes the value auditable. When a system offers both shapes, the ISO-with-offset form is the canonical one; the pretty one is a report.
+
+2. **When merging exports, the file that CARRIES an offset wins.** "First one I saw" is not a merge rule — alphabetical filename order can easily let the zone-less file win, and the downgrade is silent:
+
+   ```python
+   if previous is None:                          by_id[row_id] = r
+   elif not previous['Inicio'] and r['Inicio']:  # the new one has an offset, the old one doesn't
+       replace(previous, r)
+   ```
+
+   And make the loss audible: `N row(s) from X ignored: no time zone`.
+
+3. **"Is this offset broken?" is computed, never hardcoded.** Comparing against a fixed `-05:00` is wrong for half the year. Ask the zone what offset it *had on that date*:
+
+   ```python
+   expected = ini.astimezone(ZoneInfo(LOCAL_TZ)).strftime('%z')
+   broken   = raw[-6:] != f'{expected[:3]}:{expected[3:]}'
+   ```
+
+   Same reason the winter date matters in the check above: an offset is a function of the zone **and** the instant, never a constant.
+
+### The same product ships more than one schema
+
+Three variants seen from one system: the delimiter as `;` or `,`, the id column as `ID` or `ID cita`, and status values localized (`Pendiente`) or in English (`Pending`).
+
+**Decide by column names, never by filename**, and **fail loudly** on a schema or a status value you don't recognize. A silently mis-read export is worse than a crash: it yields a complete, believable calendar with every hour moved. Same family as [typing the response you measured instead of the documented one](api-boundary-contracts.md).
