@@ -34,7 +34,7 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 |---|---|
 | Stack, file structure, file/component naming, pure functions, JSX unicode gotcha | [reference/stack-and-conventions.md](reference/stack-and-conventions.md) |
 | Server vs client, RSC/SSR, `'use client'` rules, `swr`, Suspense, code skeletons | [reference/server-first.md](reference/server-first.md) |
-| Layout stability + the trace-upward debugging method | [reference/layout.md](reference/layout.md) |
+| Layout stability + the trace-upward debugging method; why `width:fit-content` on a flex row collapses instead of filling, and the `--n` count + `min()`/`calc()` fix | [reference/layout.md](reference/layout.md) |
 | WebP images, lazy loading, Web Vitals (LCP/CLS/FID) | [reference/performance.md](reference/performance.md) |
 | Static vs dynamic rendering: how one uncached fetch in the layout turns every route dynamic, reading the build's route table, choosing a cache policy per read | [reference/static-vs-dynamic-rendering.md](reference/static-vs-dynamic-rendering.md) |
 | Vercel deploy, error handling, external-CDN / no double-hosting | [reference/deploy.md](reference/deploy.md) |
@@ -65,6 +65,7 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 
 - Reaching for `'use client'` + `useState`/`useEffect` to fetch data → use an RSC + server fetch instead.
 - Patching a leaf component to fix empty space or cramping → the cap is in an ancestor (page → layout → root → global CSS). Trace upward first.
+- Sizing a flex row with `width:fit-content` (+ `max-width:100%`) so it "fills when there are many children" → with `min-width:0` children it collapses to about half the available width, and without the `max-width` it overflows and hides children behind a horizontal scrollbar. Pass the child count as a custom property and use `width: min(100%, calc(...))`. Verify by screenshotting at the target viewport width, not by reading the CSS. See [reference/layout.md](reference/layout.md).
 - Committing `public/` while serving media from an external CDN → double-hosting. `public/` goes in `.gitignore` from the first scaffold.
 - Using a backslash-u unicode escape in JSX text expecting an accented letter → it renders the raw escape characters; type the real char.
 - Apilar tabs/pills con `flex-wrap` en móvil cuando no caben → usa una sola línea con scroll horizontal (`overflow-x-auto` + `min-w-0`). Ver [reference/mobile-design.md](reference/mobile-design.md).
