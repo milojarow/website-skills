@@ -23,6 +23,8 @@ Cuando una fila de tabs (nav de un admin), pills o chips no cabe en el ancho del
 
 **Patrón validado** — para una barra de tabs de admin que puede crecer, pasarla de wrap → scroll horizontal de una sola línea (en vez de envolver). Es el **default** para cualquier barra de tabs / segmented control que pueda crecer (admins con muchas secciones, filtros, categorías).
 
+**Cuando la fila ya desbordó y "toda la página se ve deformada":** el scroll horizontal del *documento* sale de esa fila, no del layout. Medición headless (`scrollWidth` vs `clientWidth`), contención con `overflow-x-auto`, arrastre con mouse, fades por lado y scroll-into-view del item activo en [overflowing-row-scroll-container.md](overflowing-row-scroll-container.md).
+
 ## Grid items que se recortan en tablet/móvil
 
 Un grid item también tiene `min-width: auto` y se niega a encoger bajo su contenido → recorta contenido **en silencio** (sin scroll, sin aviso) cuando el contenedor tiene `overflow: hidden`. Fix:
