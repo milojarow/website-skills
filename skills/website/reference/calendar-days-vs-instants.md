@@ -21,6 +21,25 @@ Slicing to 10 characters instead of branching on the string's length (`v.length 
 
 Noon UTC survives every zone from UTC−11 to UTC+11 without changing day.
 
+## A timestamp without the trailing `Z` is read as LOCAL time
+
+Measured on both mainstream engines (V8 and JavaScriptCore): drop the final `Z` and
+`new Date("2026-08-07T14:35:00.793")` is parsed as **local** wall-clock time and displaced by the
+machine's offset. No error, no `NaN` — a plausible, wrong value. **Normalize every incoming date
+at a single entry point** rather than at each use site.
+
+(One belief worth retiring, because it circulates: "JavaScriptCore rejects
+`YYYY-MM-DD HH:MM:SS.sssZ` with a space" is **false** on modern JSC — measured on a Bun runtime,
+which is JSC-based: it accepts it just like V8. The weaker true statement is that this form lies
+outside the Date Time String Format the specification guarantees, so it is parsed by an
+implementation-defined fallback. Don't emit it; don't assume it throws either.)
+
+**A bench that runs in UTC cannot see any of this.** At offset zero the with-`Z` and without-`Z`
+forms parse identically, so a suite of hundreds of date assertions goes green with the bug alive
+and the shift only shows up on the user's device. Pin `process.env.TZ` to a zone with a real
+offset on the first line of the bench — and verify `TZ` actually moves `Date` in that engine
+instead of assuming it did.
+
 ## The real correction is not the slice
 
 It's that **calendar days and instants are different types and need different functions**:
