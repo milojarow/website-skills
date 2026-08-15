@@ -1,6 +1,6 @@
-# The API boundary — identity fields, unicode matching, and the real response shape
+# The API boundary — identity fields, unicode matching, the real response shape, and fields that change meaning
 
-Three failures that all live at the same seam: the front sends or reads something that *looks* right and the backend disagrees. None of them is caught by a typecheck or a linter.
+Four failures that all live at the same seam: the front sends or reads something that *looks* right and the backend disagrees. None of them is caught by a typecheck or a linter.
 
 ## 1. Send identity fields explicitly, even when you think the token carries them
 
@@ -48,3 +48,71 @@ Declaring `id` required in the TypeScript type makes the compiler **endorse** a 
 **Call the endpoint with a real token and type what it actually returns.** If the contract and the measurement disagree, the measurement wins and the contract is the bug to file.
 
 This is the same family as [a `date` column that arrives as an instant](calendar-days-vs-instants.md): the data is there, the shape isn't what was assumed, and the screen lies with a healthy face.
+
+## 4. A field that changes MEANING — not name — inverts every verdict built on it, in silence
+
+Measured in production: a panel spent weeks painting **"delivered"** over what was really
+"accepted", and the day the backend was corrected the *same untouched UI* started painting
+**"never arrived"** over every healthy message.
+
+**Why this is worse than a rename.** A rename degrades to an absent field: a tolerant
+normalizer returns `undefined`, the default kicks in, and at worst the UI says nothing — it is
+either visible or harmless. A **semantic change keeps the name, the type and the range of
+values**. Nothing fails. The same `false` that used to mean "it failed" now means "not
+confirmed yet", and the UI keeps drawing the old verdict with total confidence. The code has no
+way to notice, and neither does the type: `boolean` is still `boolean`.
+
+```
+before:  delivered:true = "the provider accepted it"        -> UI ✅
+after:   delivered:true = "the provider CONFIRMED delivery" -> UI ✅   (same line, different truth)
+```
+
+The case that makes it visible: under the new semantics a healthy message is **born `false`**
+and rises to `true` a second later, when the receipt arrives. If the UI refetches the record
+right after sending — the most ordinary pattern there is, "let the stored record have the last
+word" — **every successful send flashes the failure state** for that second. The false alarm
+lands on the happy path, on every operation, not in some rare corner.
+
+### The rule
+
+**A boolean cannot carry a verdict that has more than two states.** As soon as the real process
+has phases (`accepted → sent → delivered → read | failed`), the verdict is read from a **status**
+field and the boolean becomes a past datum, not a source.
+
+And the corollary almost everyone forgets: **the empty state `""` is not a state — it is the
+absence of an instrument.** Rows written before tracking existed were never measured. Drawing ✅
+on them is inventing; drawing ⚠️ repaints months of healthy history as failures. **Draw nothing.**
+Silence is the honest mark for "I don't know".
+
+```js
+const failed = m.status === 'failed';   // only an explicit failure is a failure
+if (!m.status) return null;             // no instrument, no verdict
+```
+
+### Two implementation traps that come with it
+
+1. **Re-key the cache/diff signature too.** If the list keeps a signature to decide "this is
+   already on screen, don't replace its state" and that signature is keyed on the OLD field, the
+   mark freezes at whatever it was on the first fetch and the transitions never repaint. The
+   signature must be keyed on the field that now decides.
+
+2. **One HTTP status code can gain a second meaning in the same deploy.** A `409` that meant
+   exactly one thing ("another actor took the resource") can start also meaning "the time window
+   closed". The old UI not only showed the wrong reason — it **mutated state** (marking the other
+   actor as active) based on what the 409 supposedly proved. **A status code is not a
+   discriminator:** require a `code` field in the body and route on it — never on which fields
+   are present or missing (absence becomes false the day someone adds the field in passing), and
+   never on the message text.
+
+### How to catch it before the user does
+
+For any field that feeds an on-screen verdict, ask:
+
+- **What is its value at instant 0 of a SUCCESSFUL operation?** If it is the same value that
+  draws the error, flicker is guaranteed.
+- **What do the rows written before the change carry?** Ask for the real count per value instead
+  of assuming it. Measured once: every existing row carried the flag explicitly `true`, so the
+  "absent ⇒ ok" default never fired — relying on it would have been imaginary coverage.
+- **The negative assertion is worth more than the positive ones:** grep the **served bytes** for
+  the old comparison and require **zero** occurrences. Proving the new logic exists does not
+  prove the old one died.
