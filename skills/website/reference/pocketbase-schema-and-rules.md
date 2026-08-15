@@ -53,10 +53,16 @@ public API returns has `price > 0`, which makes loading the rest of the catalogu
   `duration_min: 0` is not rejected, it is silently replaced by the default. A `min:5`
   floor only fires on a truthy out-of-range value. Send `null` or omit the field
   entirely; never send `0` to mean "unset".
-- **A denied rule does not return 403.** `list` denied → **`200` with `items: []`**;
-  `view` denied → **`404`**. So an **empty** collection looks identical to a **gated**
-  one, and "the API returned nothing" is not evidence that the lock exists. To prove it,
-  seed one record and check that a superuser sees 1 and an anonymous caller sees 0.
+- **A denial does not announce itself the same way twice.** `list` denied → **`200` with
+  `items: []`**; `view` denied → **`404`**; a collection whose rules are NULL
+  (superuser-only) answers **`403` "Only superusers..."** to an unauthenticated
+  `GET`/`PATCH`/`POST`, while another collection in the same project answered **`404`**
+  to a denied `update` (PocketBase filters instead of denying). So an **empty**
+  collection can look identical to a **gated** one, and "the API returned nothing" is not
+  evidence that the lock exists. To prove a lock, seed one record and check that a
+  superuser sees 1 and an anonymous caller sees 0; to read the denial signal itself,
+  measure it **per collection** with a call to a made-up collection as the negative
+  control. See [pocketbase-public-editable-form.md](pocketbase-public-editable-form.md).
 - **The factory `users` collection ships `createRule = ''`** — public open signup. That
   is the product default, not somebody's oversight, but it has to be closed on any site
   that does not offer accounts.
