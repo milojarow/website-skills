@@ -10,13 +10,18 @@
       "name": "website-skills",
       "source": "./",
       "description": "Use when building or editing a Next.js + Tailwind site on the DeployNow stack — App Router, React, DaisyUI, NextAuth, deployed on Vercel. Covers server-first RSC/SSR decisions, file/component naming, layout stability + trace-upward debugging, WebP images, Web Vitals, async error handling, Vercel deploy, and mobile-first patterns.",
-      "version": "0.3.35",
+      "version": "0.4.0",
       "author": {
         "name": "milojarow",
         "url": "https://github.com/milojarow"
       },
       "category": "web-development",
-      "keywords": ["nextjs", "tailwind", "react", "vercel"],
+      "keywords": [
+        "nextjs",
+        "tailwind",
+        "react",
+        "vercel"
+      ],
       "homepage": "https://github.com/milojarow/website-skills",
       "repository": "https://github.com/milojarow/website-skills",
       "license": "MIT"

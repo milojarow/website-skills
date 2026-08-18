@@ -1,6 +1,6 @@
 ---
 name: website
-description: Use when building or editing a website or web app on the DeployNow stack — Next.js App Router, React, Tailwind + DaisyUI, NextAuth, deployed on Vercel. Use when scaffolding a page/component/feature, naming files or components, deciding server vs client components, fixing a broken or cramped layout, optimizing images or Web Vitals, handling async errors, or deploying. Not for non-web code, native/mobile apps, or generic React unrelated to this stack.
+description: Use when building, designing, or editing a website, landing page, or web app on the DeployNow stack — Next.js App Router, React, Tailwind + DaisyUI, NextAuth, deployed on Vercel. Start here for visual and design work too — it routes the design skills (brief and message, taste read, design system, build, polish, review) in working order, so invoke it before any of them. Use when scaffolding a page/component/feature, choosing a visual direction, palette or typography, naming files or components, deciding server vs client components, fixing a broken or cramped layout, optimizing images or Web Vitals, handling async errors, or deploying. Not for non-web code, native/mobile apps, or generic React unrelated to this stack.
 ---
 
 # website
@@ -16,7 +16,7 @@ The stack is **DeployNow**: JavaScript, Node.js, React, Next.js App Router, Tail
 - **Server-first.** Default to React Server Components and SSR. `'use client'`, `useState`, `useEffect` are exceptions you justify, not defaults you reach for. See [reference/server-first.md](reference/server-first.md).
 - **Layout stability.** Dynamic content must never displace its siblings, and a broken layout is almost always an *ancestor* constraint — fix the parent, never patch the leaf. See [reference/layout.md](reference/layout.md).
 
-Design is **production-grade and distinctive** — never cookie-cutter. Mobile-first, responsive, ready to ship.
+Design is **production-grade and distinctive** — never cookie-cutter. Mobile-first, responsive, ready to ship. The design *method* is not in this file: it lives in dedicated skills, and the [Design stack](#design-stack--the-order-of-work-for-anything-visual) below says which one to invoke at each phase. Do not design from memory.
 
 ## When to use
 
@@ -27,6 +27,35 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 - Optimizing images or Web Vitals; handling async errors; deploying to Vercel.
 
 **Not for:** non-web code, native/mobile apps, or generic React questions unrelated to this stack.
+
+## Design stack — the order of work for anything visual
+
+This skill owns the *stack* rules. Design method lives in dedicated skills, and a skill only helps if it is **invoked** — an installed design skill that is never called produces the same generic page as no skill at all (measured on real client sites: the first pass came out cream + serif + gold, exactly the look the taste skill forbids, because nobody had loaded it). So for any task with a visual outcome, walk this table top to bottom and invoke each phase's skill **before** doing that phase's work.
+
+**Full build** — a new site, a new landing page, a section with its own identity, or a redesign — every phase, in this order:
+
+| # | Phase | What gets decided | Invoke |
+|---|---|---|---|
+| 0 | Brief & message | Who it is for, the ONE action the page exists for, the message hierarchy (one-liner, stakes, plan) | `superpowers:brainstorming` → `marketing-cro:storybrand-messaging` → `marketing-cro:cro-methodology` |
+| 1 | Design read | The direction the brief implies — variance / motion / density dials — and the defaults you are explicitly *not* taking | `design-taste-frontend` (§0–1: brief inference, the three dials, anti-default discipline) |
+| 2 | Design system | Style, palette, type pairing, spacing / radius / shadow scales — one token system, not per-section improvisation | `ui-ux-pro-max:ui-ux-pro-max` (search its local DB of styles, palettes, pairings) → `ux-design:web-typography` → `ux-design:refactoring-ui` |
+| 3 | Build | Structure, sections, layout, RSC/client split | `frontend-design:frontend-design` (brainstorm → explore → plan → critique → build → critique again) + this skill's stack rules |
+| 4 | Polish | Hover / focus / active states, motion restraint, borders, shadows, optical alignment, tabular numbers | `make-interfaces-feel-better` → `ux-design:microinteractions` |
+| 5 | Assets | Hero video, product imagery, charts, banners — only when the page needs them | `hyperframes` (video), `media-use` (BGM / SFX / images), `luna-skills:luna` (CDN), `dataviz` (charts), `ui-ux-pro-max:banner-design` |
+| 6 | Review | AI-tells pre-flight, usability audit or taste review, visual QA at desktop width | `design-taste-frontend` (§9 forbidden patterns) → `ux-design:ux-heuristics` or `ux-design:steve-jobs-design-review` → `pixelbrowse:pixelbrowse` at 1440 px, light and dark → `superpowers:verification-before-completion` |
+| 7 | Ship | Deploy, indexing, the analytics switch | this skill: [reference/deploy.md](reference/deploy.md), [reference/indexing-and-search-console.md](reference/indexing-and-search-console.md), [reference/vercel-web-analytics.md](reference/vercel-web-analytics.md) |
+
+**Partial tasks** — route by the shape of the request, not by habit:
+
+- A new component or section inside an existing design → phases 3 → 4 → 6 (pre-flight only).
+- "It looks generic / AI-made / low-level", with or without a reference → capture yours and the reference at the **same** width (1440, not the 875 default) and work from the diff, never from taste alone; then phase 1 → 6 → 4.
+- Copy only → phase 0 (`marketing-cro:storybrand-messaging`).
+- Layout broken / cramped / misaligned → [reference/layout.md](reference/layout.md) only — no design skills.
+- An app or panel (POS, admin, dashboard) rather than a landing → phases 1–4 + 6, plus `ux-design:design-everyday-things` (affordances); add `ux-design:hooked-ux` / `ux-design:improve-retention` only when habit or retention is the goal. Skip phase 0's CRO.
+- A showcase piece where the page itself is the product (portfolio, agency hero, "Awwwards quality") → add `ux-design:top-design` between phases 2 and 3.
+- The whole build guided phase by phase, with a question at every decision and living docs in the repo's `docs/` → `metaskills:create-website` (a journey; it writes into `docs/`).
+
+The design plugins (`ux-design`, `ui-ux-pro-max`, `marketing-cro`, `metaskills`) are enabled **per repo**, not globally — `claude plugin enable <plugin> --scope project`, effective next session. If a `Skill` call above fails with an unknown skill, the repo has not been enabled: say so and enable it; do not silently skip the phase.
 
 ## Where things live
 
@@ -79,6 +108,7 @@ Design is **production-grade and distinctive** — never cookie-cutter. Mobile-f
 
 ## Common mistakes
 
+- Designing a page from memory with the design skills installed but never invoked → the output is indistinguishable from having no skills at all (generic look, forbidden AI tells, improvised palette). Walk the [Design stack](#design-stack--the-order-of-work-for-anything-visual) phase by phase and invoke each skill before that phase's work.
 - Reaching for `'use client'` + `useState`/`useEffect` to fetch data → use an RSC + server fetch instead.
 - Patching a leaf component to fix empty space or cramping → the cap is in an ancestor (page → layout → root → global CSS). Trace upward first.
 - Sizing a flex row with `width:fit-content` (+ `max-width:100%`) so it "fills when there are many children" → with `min-width:0` children it collapses to about half the available width, and without the `max-width` it overflows and hides children behind a horizontal scrollbar. Pass the child count as a custom property and use `width: min(100%, calc(...))`. Verify by screenshotting at the target viewport width, not by reading the CSS. See [reference/layout.md](reference/layout.md).
