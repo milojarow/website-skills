@@ -29,6 +29,30 @@ An unavoidable failure string owes the reader two things:
 
 **If the message promises something, implement the promise.** "We'll keep trying on our own" becomes a fact only when a retry every N seconds exists behind it. Without it, it is the same lie as a false "saved" — just told in the future tense.
 
+## When the server sends the reason and the client reads only the `code`, N failures look like one
+
+Measured on a WebSocket chat: the server rejected with
+`{"t":"error","code":"VALIDATION","message":"body too long"}`, and the client did
+`switch (frame.code)` — painting one generic toast for the whole `VALIDATION` family. Three
+distinct failures of the same endpoint (invalid recipient, empty body, body too long) reached
+the screen as the same sentence.
+
+The consequence is not theoretical: the person **could not find out why their message wasn't
+sending**, and had to read the server's code to discover something the server had already said
+in the frame. The reason travelled down the wire and was thrown away in the `switch`.
+
+**Rule:** when the error contract carries `code` + `message`, the **code picks the family and
+the message picks the phrase**. The `message` is contract text, not user text — map it to i18n
+strings, never render it raw. Keep the generic fallback only for protocol reasons (malformed
+frame, unknown type), where the person can do nothing with the information.
+
+Cheap audit of any client: grep the error handler for `.code` and count how many distinct
+server reasons land in each branch. A branch covering more than two *actionable* reasons is the
+readability bug.
+
+Related: the ceiling itself is usually mirrored on the client so it can warn before sending —
+that mirror has its own traps, in [client-mirrored-server-limit.md](client-mirrored-server-limit.md).
+
 ## Initial state is the same lie in the past tense
 
 "All saved" on first paint, when nothing has been saved yet, is that same false claim pointed backwards. Don't invent state on the client: if the backend returns a write counter, branch on it — `0` renders *"Ready to answer"*, `> 0` renders *"All saved"*.
