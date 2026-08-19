@@ -1,8 +1,9 @@
 # Counting strings in the HTML of an SSR page: the RSC payload doubles everything
 
 Verifying a live page with `curl` + `grep` is cheap and correct. But the HTML an App
-Router page serves has two properties that break the naive count, and both produce a
-number **higher or lower** than the truth with no error anywhere.
+Router page serves has several properties that break the naive count, and each of them
+produces a number **higher or lower** than the truth — or a value that reads as empty —
+with no error anywhere.
 
 ## Trap 1 — the RSC payload repeats every visible string
 
@@ -59,6 +60,72 @@ identical.
 
 Extra: `Available` is a substring of `Not available`, so without the `>…<` anchor the
 positive count is contaminated by the negative one.
+
+## Trap 4 — React writes `<!-- -->` between static text and an interpolated value
+
+The quietest one of the family: it makes a value that **is** there read as **empty**.
+
+```jsx
+<span>backend catalog: {reason}</span>
+```
+
+is not served as one continuous string. React inserts an empty comment at the
+boundary between the static part and the interpolated one, so it can find that
+boundary again when it hydrates:
+
+```html
+backend catalog: <!-- -->HTTP 404</span>
+```
+
+The reflex pattern for "capture to the end of the node" is `[^<]*`. The `<` of the
+separator stops it **immediately after the colon**:
+
+```bash
+grep -oE "backend catalog: [^<]*" page.html
+#   ->  "backend catalog: "        (reads as an empty value; it says HTTP 404)
+```
+
+Measured in production: a "blank diagnostic" that had carried `HTTP 404` from the
+start, chased far enough to produce **two commits fixing a symptom that did not
+exist**, before anyone looked at the raw HTML.
+
+**It is systemic, not a corner case.** Verified independently by a second team on the
+same page: **9** empty comments in a single document. Every `{variable}` glued to
+static text produces one, so the trap waits in every measurement of the markup, not
+just the one that bit you.
+
+It works in reverse too. A string the component builds by concatenating static +
+interpolated (`Total: {n} items`) is **not contiguous** in the HTML, so a search for
+it returns zero with the value perfectly present.
+
+### The rule
+
+To read an interpolated value, do not anchor with `[^<]*`. Take a **raw window** of
+characters around the anchor:
+
+```bash
+grep -oE "backend catalog.{0,120}" page.html
+python3 -c "h=open('page.html').read(); i=h.find('anchor'); print(repr(h[i:i+260]))"
+```
+
+`repr()` is not decoration: it makes the separator, the newlines and the spaces
+visible that a plain `echo` hides.
+
+## When the verdict is FAIL, the first suspect is the instrument
+
+Four false verdicts in a single session, and **none of them came from the code**:
+
+| what was reported | what was actually happening |
+|---|---|
+| "the state does not match, FAIL" | `>Available<` anchored compared against `Available` unanchored |
+| "the sample-data notice disappeared" | the markup carries a period: `Sample data.` |
+| "the diagnostic renders blank" | `<!-- -->` cutting the `[^<]*` short |
+| "an admin cannot delete (404)" | the URL was missing the `/records/` segment |
+
+Carry this to any text-based verification: **when the verdict is "FAIL", suspect the
+instrument before the code** — especially if the code just passed an independent
+check. And run the positive control *before* believing a zero: if the same grep
+cannot find something you know is there, none of its zeros are worth anything.
 
 ## The recipe
 
