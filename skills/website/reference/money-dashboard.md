@@ -52,6 +52,11 @@ The recurring case: the grouping code is correct — unassigned rows never enter
 
 When reviewing a data panel, read every caption **as an assertion** and ask of each: *is this still true of the code in front of me?*
 
+The same failure has a layer above the code: a caption can also assert something about the
+**client's real-world business** (who their vendors are, what they outsource) rather than about
+the data on screen. That claim needs the client's confirmation, not a plausible inference — see
+[client-business-claims-in-copy.md](client-business-claims-in-copy.md).
+
 ## Bonus: where a period floor lives
 
 If a cutoff ("only from July onward") exists solely in the render, a second consumer of the same API sees the full accumulated history without ever learning that a cutoff exists.
