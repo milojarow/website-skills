@@ -40,7 +40,36 @@ nothing, because nothing was broken.
 for the unaccented fragment (`"Nada se cancel"`) or pick a different anchor from the same diff —
 a class name, a data attribute, an id — instead of the accented prose.
 
-## 4. The positive control that closes the method
+## 4. Non-ASCII isn't the only survival trap — object property names survive; syntax, comments, and local names don't
+
+Measured against the same served chunk, comparing candidate witnesses one by one:
+
+| witness | survives minification | why |
+|---|---|---|
+| an object property name (`moneda`, `precio_vigente`) | ✅ | renaming it would break every access to that key |
+| a literal string that renders on screen | ✅ | it's data, not an identifier |
+| a local variable name | ❌ | gets renamed to a single letter |
+| operators / syntax (`?.`, `??`, template literals) | ❌ | compiled to an equivalent form |
+| **a comment added on purpose, to serve as a marker** | ❌ | comments are stripped — the most treacherous false negative, because it was placed exactly to be found |
+| a non-exported function name | ❌ | gets renamed |
+
+Optional chaining is the sharpest version of the syntax trap: `datos?.moneda` compiles to a
+conditional (`null == a ? void 0 : a.moneda` or similar) — the `?.` stops existing as text, even
+though the property it guards is still there. Grepping the literal source expression against the
+bundle is a guaranteed miss:
+
+```
+searching for:  datos?.moneda     → 0 matches   ❌ rewritten by the compiler
+searching for:  moneda?           → 0 matches   ❌ same
+searching for:  moneda            → N matches   ✅ the bare property survives
+```
+
+**Rule: pick the witness for what it IS, not for how it looks in the source.** Source and bundle
+are two different texts, and grep only ever sees the second one. An object/field name from the
+diff is the most durable witness available; a piece of syntax or a comment you added specifically
+to be greppable is the least durable, even though it feels the most deliberate.
+
+## 5. The positive control that closes the method
 
 Before trusting a zero, confirm the search tool can find *anything*: grep the bundle for a string
 you are certain is present. If that control also returns zero, the broken thing is the
