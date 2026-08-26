@@ -94,3 +94,49 @@ The same failure mode appeared three times in one session wearing a different fa
 instead of the whole tree; the literal phrase instead of the idea; one tree instead of the two the
 system has. Before signing a negative, the question is not "what did I find?" but **"where did I
 not look?"**.
+
+## Ask it explicitly, every time you unblock a flow
+
+The most expensive defect of this class is a different shape from the rest of this file: **the
+code was correct against a wrong model of who does the work.** No automated test finds it —
+everything passes, everything compiles, the function does exactly what it says.
+
+Measured: a capability that gated a screen was held by 1 of 17 people; the person who actually
+does that job did NOT have it; and the screen they *could* reach told them to go do the work
+"from the other screen" — the one closed to them.
+
+The question to ask after fixing or unblocking any flow, before reporting it done:
+
+> **Who exactly can reach this? Enumerate them.**
+
+Don't derive it from the role name or the capability's name — measure it, and verify it **by
+logging in as that person**, not by reading the permissions table.
+
+### The contradiction is the tell
+
+The fact that solved it wasn't in the code: it was **work already on record**. That person had
+38 logged actions without ever holding the capability. That's a contradiction, and the
+contradiction is the clue: if someone does the work without the permission, **another door
+exists** — and that door is the one the rest of the flow should use. In the case measured, the
+sibling screens (upload/assign an image) required no capability at all: they were gated only by
+reaching the section, which opens for more roles.
+
+**A field on the object follows the same door as the object's other assertions**, when they are
+the same class of claim made by the same person on the same screen. What you don't do is lend the
+capability that gates money (editing prices) to unlock the capability that describes merchandise:
+those are different authorities packaged into one switch, and repackaging them is the business
+owner's call, not the implementer's.
+
+### The instrument before the object, again
+
+Measuring "who sees this tab" by reading a field called `label` in code that actually calls it
+`etiqueta` said the owner couldn't see a tab clicked, as that person, half an hour earlier —
+caught by the contradiction with what was seen, not by the code.
+
+Same day: probing an API with the wrong verb and the wrong capability name (`PATCH` + a
+capability that doesn't exist, when it was `PUT` + a different one) returned **404 on both
+calls, including the control that should have passed** — and without a positive control that
+404 read as "rejects correctly."
+
+Both errors are the same one: **inventing from memory the contract of something you yourself
+wrote.** Before trusting a new measurement, run it against a case whose answer you already know.
