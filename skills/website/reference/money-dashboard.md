@@ -57,6 +57,37 @@ The same failure has a layer above the code: a caption can also assert something
 the data on screen. That claim needs the client's confirmation, not a plausible inference — see
 [client-business-claims-in-copy.md](client-business-claims-in-copy.md).
 
+## 7. A shared-visibility dashboard: isolation applies to the detector's OUTPUT, not just its input
+
+A backend that flags "inconsistent" rows — the same recurring charge attributed to
+different owners in different periods — has to *read* the ownership label to detect the
+inconsistency. That part is normal and necessary. The trap is shipping the finding with
+the evidence still attached:
+
+    {"item": "<vendor>", "owners": ["business", "personal"], "periods": ["2026-03", "2026-07", "2026-08"]}
+
+Every field is accurate, and together they publish — on the screen the *other* stakeholder
+opens — exactly which periods one side paid for something privately. Nobody wrote a line of
+code intending that; it fell out of shipping the whole classification instead of the verdict.
+
+**Isolation applies to the OUTPUT, not just the input.** It is fine and necessary for a
+classifier to see private data internally — that's how it classifies. What crosses the
+boundary must be the *signal*, not the *evidence*:
+
+    ship:  "this total is missing 2 periods"      (an integer, no owner names)
+    don't: "it was privately paid in March and July"
+
+Verify by grepping the raw payload for the forbidden field/value, not by reading the code
+that builds it — the string should not appear at all.
+
+**Narrowing a field changes its shape, and downstream copy silently stops making sense.**
+If a consumer's sentence assumed the list could have two-or-more entries ("counted as A or
+as B"), and the redesigned payload now emits at most one, that sentence renders as a
+neutral statement of fact instead of a warning — the alert stops alerting while still
+displaying, which is worse than disappearing. Whenever a list-shaped field gets narrowed or
+values get stripped out of it, tell every downstream consumer that its length can now be
+smaller (including 0 or 1), and re-read every string built from it.
+
 ## Bonus: where a period floor lives
 
 If a cutoff ("only from July onward") exists solely in the render, a second consumer of the same API sees the full accumulated history without ever learning that a cutoff exists.
