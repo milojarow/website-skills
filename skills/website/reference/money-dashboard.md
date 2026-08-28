@@ -88,6 +88,39 @@ displaying, which is worse than disappearing. Whenever a list-shaped field gets 
 values get stripped out of it, tell every downstream consumer that its length can now be
 smaller (including 0 or 1), and re-read every string built from it.
 
+## 8. When the exception covers the heaviest case, suspect the RULE, not the case
+
+A shared-visibility dashboard flagged "vendors that don't count the same way every
+period" — the same vendor attributed to different owners across periods. Shipping it took
+four rounds of fixes, all individually correct (cut the leak in §7, scope it to the
+panel's window, replace a count with a boolean so the exact period couldn't be derived by
+subtraction, add a drift detector). Four correct fixes, all in service of a false premise.
+
+The refutation was visible from round one: one vendor — a shared SaaS subscription anyone
+on either side might expense — was filed as **an exception**, a single special case to
+carve out. It was actually the single most frequent vendor in the data. A vendor used by
+both sides in different periods isn't an anomaly; it's the ordinary shape of any shared
+vendor, which is most of them.
+
+**Count the weight of the exception before shipping it.** An exception covering a rare
+corner is a corner. An exception covering the *most frequent* case in the data is the data
+telling you the rule itself is wrong — ask, before another round of polish, "should this
+exist at all?" The trap that hides it: **every individual fix was correct**, so each round
+produced real evidence of progress. A mechanism getting steadily better is not evidence
+that it should exist.
+
+**The deeper diagnosis, worth checking for on any cross-boundary feature:** if answering
+the question requires revealing private data to be useful, and requires withholding it to
+be safe, no amount of redaction makes it both — the isolation leak was a *symptom* of
+asking a private-data question from a shared surface, not the root cause. If a field must
+cross the boundary to answer the question, the question belongs on the other side of the
+boundary, not in a redacted form on this one.
+
+**Retire it by deleting the computation, not just its rendering.** Dead code nobody reads
+is exactly what someone "restores" months later believing it regressed. Leave a tombstone
+comment stating the false premise and how it was refuted — otherwise the absence itself
+reads as a regression and gets undone.
+
 ## Bonus: where a period floor lives
 
 If a cutoff ("only from July onward") exists solely in the render, a second consumer of the same API sees the full accumulated history without ever learning that a cutoff exists.
