@@ -63,7 +63,7 @@ The design plugins (`ux-design`, `ui-ux-pro-max`, `marketing-cro`, `metaskills`)
 |---|---|
 | Stack, file structure, file/component naming, pure functions, JSX unicode gotcha | [reference/stack-and-conventions.md](reference/stack-and-conventions.md) |
 | Server vs client, RSC/SSR, `'use client'` rules, `swr`, Suspense, code skeletons | [reference/server-first.md](reference/server-first.md) |
-| Layout stability + the trace-upward debugging method; why `width:fit-content` on a flex row collapses instead of filling, and the `--n` count + `min()`/`calc()` fix | [reference/layout.md](reference/layout.md) |
+| Layout stability + the trace-upward debugging method; why `width:fit-content` on a flex row collapses instead of filling, and the `--n` count + `min()`/`calc()` fix; a flex-column child silently collapsing to zero height in a fixed-height container (print/PDF) and the `flex-shrink: 0` fix | [reference/layout.md](reference/layout.md) |
 | WebP images, lazy loading, Web Vitals (LCP/CLS/FID) | [reference/performance.md](reference/performance.md) |
 | Static vs dynamic rendering: how one uncached fetch in the layout turns every route dynamic, reading the build's route table, choosing a cache policy per read | [reference/static-vs-dynamic-rendering.md](reference/static-vs-dynamic-rendering.md) |
 | Vercel deploy, error handling, external-CDN / no double-hosting; why a gitignored route still ships in `vercel deploy` and only `.vercelignore` stops it, the take-down procedure and its objective control; and the second, invisible double-hosting door — `next/image` re-hosting a CDN image on Vercel's own domain, breaking only NEW uploads with a `402` | [reference/deploy.md](reference/deploy.md) |
