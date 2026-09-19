@@ -79,6 +79,7 @@ fixes:
 
 ## Cost anchor
 
-An image model via OpenRouter runs ~$0.07 per generated room at ~2s; background removal via
+A generated room runs ~$0.07 at ~2s (measured through OpenRouter — a cost anchor, not a routing
+instruction: which provider generates the image is the operator's call); background removal via
 `recraft/remove-background` is 1 credit and 2-3s. Ten operations for a multi-slide hero stay
 under $0.50 — **cost is not the constraint here, the light mismatch is.**
